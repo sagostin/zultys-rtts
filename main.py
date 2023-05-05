@@ -38,8 +38,6 @@ def tts():
     # return already generated files if they exist?
 
     if speaker:
-        # Text to speech with a numpy output
-        wav = tts.tts(text=text, speaker=speaker, language=language)
 
         # Generate a random file name
         file_extension = 'wav'
@@ -49,8 +47,9 @@ def tts():
 
         # Save the generated WAV file
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-        with open(file_path, 'wb') as f:
-            f.write(wav)
+
+        # Text to speech with a numpy output
+        wav = tts.tts_to_file(text=text, speaker=speaker, language=language, file=file_path)
 
         # Format the response
         response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML>'
