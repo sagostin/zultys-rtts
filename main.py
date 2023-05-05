@@ -42,7 +42,7 @@ def tts():
     )
 
     audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.ALAW
+        audio_encoding=texttospeech.AudioEncoding.MULAW,sample_rate_hertz=8000
     )
 
     response = client.synthesize_speech(
