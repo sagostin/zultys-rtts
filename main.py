@@ -1,7 +1,13 @@
-from flask import Flask, request, jsonify, send_file
+import os
+import random
+import string
+
 from TTS.api import TTS
+from flask import Flask, request
 
 app = Flask(__name__)
+
+app.config['UPLOAD_FOLDER'] = 'static/tts/'
 
 
 @app.route('/tts', methods=['GET'])
@@ -33,10 +39,18 @@ def tts():
 
     if speaker:
         # Text to speech with a numpy output
-        file_path = f'static/tts/{file_name}'
         wav = tts.tts(text=text, speaker=speaker, language=language)
-        # Text to speech to a file
-        tts.tts_to_file(text=text, speaker=speaker, language=language, file_path=file_path)
+
+        # Generate a random file name
+        file_extension = 'wav'
+        random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+        file_name = f'{random_string}.{file_extension}'
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+
+        # Save the generated WAV file
+        os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+        with open(file_path, 'wb') as f:
+            f.write(wav)
 
         # Format the response
         response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML>'
