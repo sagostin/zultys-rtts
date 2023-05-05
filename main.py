@@ -20,7 +20,7 @@ def tts():
     # Set the Google Cloud TTS API endpoint and API key
     url = 'https://texttospeech.googleapis.com/v1/text:synthesize'
 
-    api_key = requests.args.get('api_key', 'YOUR_API_KEY')
+    api_key = request.args.get('api_key', 'YOUR_API_KEY')
 
     # Generate a random file name
     random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
