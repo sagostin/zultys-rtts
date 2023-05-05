@@ -11,14 +11,13 @@ app.config['UPLOAD_FOLDER'] = 'static/tts/'
 
 @app.route('/tts', methods=['GET'])
 def tts():
+    from google.cloud import texttospeech
+
     text = request.args.get('text')
     language = request.args.get('language', 'en')
     voice = request.args.get('voice', 'en-US-Wavenet-D')
     speed = request.args.get('speed', '1.0')
     file_extension = 'wav'
-
-    # Set the Google Cloud TTS API endpoint and API key
-    url = 'https://texttospeech.googleapis.com/v1/text:synthesize'
 
     api_key = request.args.get('api_key', 'YOUR_API_KEY')
 
@@ -27,21 +26,27 @@ def tts():
     file_name = f'{random_string}.{file_extension}'
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
 
-    # Set the request body JSON
-    request_body = {
-        "input": {"text": text},
-        "voice": {"languageCode": language, "name": voice},
-        "audioConfig": {"audioEncoding": file_extension.lower(), "speakingRate": speed}
-    }
+    """Synthesizes speech from the input string of text."""
 
-    # Set the request headers
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {api_key}'
-    }
+    client = texttospeech.TextToSpeechClient(credentials=api_key)
 
-    # Send the request to the Google Cloud TTS API endpoint
-    response = requests.post(url, headers=headers, json=request_body)
+    input_text = texttospeech.SynthesisInput(text=text)
+
+    # Note: the voice can also be specified by name.
+    # Names of voices can be retrieved with client.list_voices().
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="en-US",
+        name="en-US-Standard-C",
+        ssml_gender=texttospeech.SsmlVoiceGender.FEMALE,
+    )
+
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+
+    response = client.synthesize_speech(
+        request={"input": input_text, "voice": voice, "audio_config": audio_config}
+    )
 
     if response.status_code == 200:
         # Save the generated WAV file
