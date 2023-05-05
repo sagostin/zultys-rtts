@@ -29,14 +29,14 @@ def tts():
     # Init TTS with the target model name
     tts = TTS(model_name=model_name, progress_bar=progress_bar, gpu=gpu)
 
-    speaker = tts.speakers[0]
+    # speaker = tts.speakers[0]
 
     response = ''
 
     # todo require auth, and save file to local directory
     # return already generated files if they exist?
 
-    if speaker:
+    if text:
 
         # Generate a random file name
         file_extension = 'wav'
@@ -48,10 +48,10 @@ def tts():
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
         # Text to speech with a numpy output
-        wav = tts.tts_to_file(text=text, speaker=speaker, language=language, file_path=file_path)
+        wav = tts.tts_to_file(text=text, speaker=None, language=language, file_path=file_path)
 
         # Format the response
-        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML>'
+        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML> '
     else:
         response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR</BODY></HTML>'
 
