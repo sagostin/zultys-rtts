@@ -5,7 +5,7 @@ from flask import Flask, request
 
 app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = 'upload/tts/'
+app.config['UPLOAD_FOLDER'] = 'static/tts/'
 
 
 @app.route('/tts', methods=['GET'])
@@ -56,7 +56,7 @@ def tts():
             f.write(response.audio_content)
 
         # Format the response
-        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.topsoffice.ca/upload/tts/{file_path}</BODY></HTML>'
+        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.topsoffice.ca/static/tts/{file_path}</BODY></HTML>'
     else:
         response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR</BODY></HTML>'
 
