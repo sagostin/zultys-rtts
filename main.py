@@ -17,19 +17,23 @@ def tts():
     gpu = request.args.get('gpu', False)
     progress_bar = request.args.get('progress_bar', False)
 
+    # constants?
+    language = 'en'
+    model_name = TTS.list_models()[0]
+
     # Init TTS with the target model name
     tts = TTS(model_name=model_name, progress_bar=progress_bar, gpu=gpu)
 
-    response = ''
     speaker = tts.speakers[0]
-    language = 'en'
+
+    response = ''
 
     # todo require auth, and save file to local directory
     # return already generated files if they exist?
 
     if speaker:
         # Text to speech with a numpy output
-        file_path = f'static/{file_name}'
+        file_path = f'static/tts/{file_name}'
         wav = tts.tts(text=text, speaker=speaker, language=language)
         # Text to speech to a file
         tts.tts_to_file(text=text, speaker=speaker, language=language, file_path=file_path)
