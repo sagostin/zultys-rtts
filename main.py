@@ -18,11 +18,6 @@ def tts():
     speed = request.args.get('speed', '1.0')
     file_extension = 'wav'
 
-    api_key = request.args.get('api_key', 'YOUR_API_KEY')
-
-    # Set env token for api key
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = api_key
-
     # Generate a random file name
     random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
     file_name = f'{random_string}.{file_extension}'
@@ -30,7 +25,11 @@ def tts():
 
     """Synthesizes speech from the input string of text."""
 
-    client = texttospeech.TextToSpeechClient()
+    gcloud_project = request.args.get('id')
+    gcloud_key = request.args.get('passw')
+
+    client = texttospeech.TextToSpeechClient(client_options={"api_key": gcloud_key,
+                                                             "quota_project_id": gcloud_project})
 
     input_text = texttospeech.SynthesisInput(text=text)
 
