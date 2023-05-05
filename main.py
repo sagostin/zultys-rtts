@@ -49,7 +49,7 @@ def tts():
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
         # Text to speech with a numpy output
-        wav = tts.tts_to_file(text=text, speaker=speaker, language=language, file=file_path)
+        wav = tts.tts_to_file(text=text, speaker=speaker, language=language, file_path=file_path)
 
         # Format the response
         response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML>'
