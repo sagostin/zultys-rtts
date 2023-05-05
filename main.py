@@ -12,7 +12,7 @@ app.config['UPLOAD_FOLDER'] = 'static/tts/'
 
 @app.route('/tts', methods=['GET'])
 def tts():
-    model_name = request.args.get('model_name')
+    model_name = request.args.get('model_name', 'tts_models/en/ek1/tacotron2')
     text = request.args.get('text')
     language = request.args.get('language', None)
     speaker = request.args.get('speaker', None)
@@ -25,7 +25,6 @@ def tts():
 
     # constants?
     language = 'en'
-    model_name = TTS.list_models()[0]
 
     # Init TTS with the target model name
     tts = TTS(model_name=model_name, progress_bar=progress_bar, gpu=gpu)
