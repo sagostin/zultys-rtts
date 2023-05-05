@@ -11,7 +11,7 @@ def tts():
     language = request.args.get('language', None)
     speaker = request.args.get('speaker', None)
     speaker_wav = request.args.get('speaker_wav', None)
-    file_path = request.args.get('file_path')
+    file_name = request.args.get('file_name')
     emotion = request.args.get('emotion', None)
     speed = request.args.get('speed', None)
     gpu = request.args.get('gpu', False)
@@ -20,13 +20,18 @@ def tts():
     # Init TTS with the target model name
     tts = TTS(model_name=model_name, progress_bar=progress_bar, gpu=gpu)
 
-    if speaker_wav:
-        # Example voice cloning
-        tts.tts_to_file(text=text, speaker_wav=speaker_wav, language=language, file_path=file_path)
-    elif speaker:
+    response = ''
+
+    if speaker:
         # Text to speech with a numpy output
+        file_path = f'static/{file_name}'
         wav = tts.tts(text=text, speaker=speaker, language=language)
         # Text to speech to a file
         tts.tts_to_file(text=text, speaker=speaker, language=language, file_path=file_path)
 
-    return send_file(file_path, as_attachment=True)
+        # Format the response
+        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML>'
+    else:
+        response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR</BODY></HTML>'
+
+    return response, 200
