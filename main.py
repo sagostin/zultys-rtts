@@ -49,11 +49,11 @@ def tts():
         request={"input": input_text, "voice": voice, "audio_config": audio_config}
     )
 
-    if response.status_code == 200:
+    if response.audio_content:
         # Save the generated WAV file
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
         with open(file_path, 'wb') as f:
-            f.write(response.content)
+            f.write(response.audio_content)
 
         # Format the response
         response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML>'
