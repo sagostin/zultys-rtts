@@ -35,3 +35,8 @@ def tts():
         response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR</BODY></HTML>'
 
     return response, 200
+
+
+if __name__ == '__main__':
+    # run app in debug mode on port 5000
+    app.run(debug=True, port=5000)
