@@ -21,6 +21,8 @@ def tts():
 
     api_key = request.args.get('api_key', 'YOUR_API_KEY')
 
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = api_key
+
     # Generate a random file name
     random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
     file_name = f'{random_string}.{file_extension}'
@@ -41,7 +43,7 @@ def tts():
     )
 
     audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3
+        audio_encoding=texttospeech.AudioEncoding.MULAW
     )
 
     response = client.synthesize_speech(
