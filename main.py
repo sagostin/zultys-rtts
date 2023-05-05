@@ -1,7 +1,6 @@
 import os
 import random
 import string
-import requests
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -21,6 +20,7 @@ def tts():
 
     api_key = request.args.get('api_key', 'YOUR_API_KEY')
 
+    # Set env token for api key
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = api_key
 
     # Generate a random file name
@@ -30,7 +30,7 @@ def tts():
 
     """Synthesizes speech from the input string of text."""
 
-    client = texttospeech.TextToSpeechClient(credentials=api_key)
+    client = texttospeech.TextToSpeechClient()
 
     input_text = texttospeech.SynthesisInput(text=text)
 
