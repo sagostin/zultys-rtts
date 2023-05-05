@@ -1,8 +1,7 @@
 import os
 import random
 import string
-
-from TTS.api import TTS
+import requests
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -12,46 +11,46 @@ app.config['UPLOAD_FOLDER'] = 'static/tts/'
 
 @app.route('/tts', methods=['GET'])
 def tts():
-    model_name = request.args.get('model_name', 'tts_models/en/ek1/tacotron2')
     text = request.args.get('text')
-    language = request.args.get('language', None)
-    speaker = request.args.get('speaker', None)
-    speaker_wav = request.args.get('speaker_wav', None)
-    file_name = request.args.get('file_name')
-    emotion = request.args.get('emotion', None)
-    speed = request.args.get('speed', None)
-    gpu = request.args.get('gpu', False)
-    progress_bar = request.args.get('progress_bar', False)
+    language = request.args.get('language', 'en')
+    voice = request.args.get('voice', 'en-US-Wavenet-D')
+    speed = request.args.get('speed', '1.0')
+    file_extension = 'wav'
 
-    # constants?
-    language = 'en'
+    # Set the Google Cloud TTS API endpoint and API key
+    url = 'https://texttospeech.googleapis.com/v1/text:synthesize'
 
-    # Init TTS with the target model name
-    tts = TTS(model_name=model_name, progress_bar=progress_bar, gpu=gpu)
+    api_key = requests.args.get('api_key', 'YOUR_API_KEY')
 
-    # speaker = tts.speakers[0]
+    # Generate a random file name
+    random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
+    file_name = f'{random_string}.{file_extension}'
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
 
-    response = ''
+    # Set the request body JSON
+    request_body = {
+        "input": {"text": text},
+        "voice": {"languageCode": language, "name": voice},
+        "audioConfig": {"audioEncoding": file_extension.lower(), "speakingRate": speed}
+    }
 
-    # todo require auth, and save file to local directory
-    # return already generated files if they exist?
+    # Set the request headers
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {api_key}'
+    }
 
-    if text:
+    # Send the request to the Google Cloud TTS API endpoint
+    response = requests.post(url, headers=headers, json=request_body)
 
-        # Generate a random file name
-        file_extension = 'wav'
-        random_string = ''.join(random.choices(string.ascii_lowercase + string.digits, k=8))
-        file_name = f'{random_string}.{file_extension}'
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
-
+    if response.status_code == 200:
         # Save the generated WAV file
         os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-        # Text to speech with a numpy output
-        wav = tts.tts_to_file(text=text, speaker=None, language=None, file_path=file_path)
+        with open(file_path, 'wb') as f:
+            f.write(response.content)
 
         # Format the response
-        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML> '
+        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.zultys-support.com/{file_path}</BODY></HTML>'
     else:
         response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR</BODY></HTML>'
 
@@ -60,4 +59,4 @@ def tts():
 
 if __name__ == '__main__':
     # run app in debug mode on port 5000
-    app.run(host='0.0.0.0', debug=True, port=5000)
+    app.run(host='0.0.0.0', debug=True, port=8081)
