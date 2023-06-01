@@ -56,7 +56,7 @@ def tts():
             f.write(response.audio_content)
 
         # Format the response
-        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.topsoffice.ca/{file_path}<br><HR></BODY></HTML>'
+        response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://URL_HERE/{file_path}<br><HR></BODY></HTML>'
     else:
         response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR<br><HR></BODY></HTML>'
 
