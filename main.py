@@ -64,9 +64,10 @@ def tts():
 
         # Format the response
         response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.topsoffice.ca/{file_path}<br><HR></BODY></HTML>'
-        logging.info("file saved as {file_path}, for text : {text}")
+        logging.info("file saved as " + file_path + ", for text :" + text)
     else:
         response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR<br><HR></BODY></HTML>'
+        logging.error("file FAILED to generate as " + file_path + ", for text :" + text)
 
     return response, 200
 
