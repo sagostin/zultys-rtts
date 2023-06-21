@@ -2,11 +2,18 @@ import os
 import random
 import string
 from flask import Flask, request
+import logging
 
 app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = 'static/tts/'
 
+logging.basicConfig(
+    level=logging.INFO,  # Set the desired log level (e.g., INFO, DEBUG, ERROR)
+    filename='logs.txt',  # Specify the file name for log output
+    filemode='a',  # Use 'a' to append logs to the file, 'w' to overwrite it
+    format='%(asctime)s - %(levelname)s - %(message)s'  # Define the log message format
+)
 
 @app.route('/tts', methods=['GET'])
 def tts():
@@ -57,6 +64,7 @@ def tts():
 
         # Format the response
         response = f'<HTML><HEAD/><BODY>Response = OK<br><HR>result = 1<br>file = http://tts.topsoffice.ca/{file_path}<br><HR></BODY></HTML>'
+        logging.info("file saved as {file_path}, for text : {text}")
     else:
         response = f'<HTML><HEAD/><BODY>Response = ERROR<br><HR>result = 0<br>file = ERROR<br><HR></BODY></HTML>'
 
@@ -64,5 +72,6 @@ def tts():
 
 
 if __name__ == '__main__':
+
     # run app in debug mode on port 5000
     app.run(host='0.0.0.0', debug=True, port=8081)
