@@ -253,4 +253,4 @@ def purge():
 if __name__ == '__main__':
     init_db()
     # Run app in debug mode on port 8081
-    app.run(host='0.0.0.0', debug=True, port=8081)
+    app.run(host='0.0.0.0', debug=False, port=8081)
