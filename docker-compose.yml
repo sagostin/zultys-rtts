@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  zultys-rtts:
+    build: .
+    container_name: zultys-rtts
+    restart: unless-stopped
+
+    # App listens on 8081 in the container
+    ports:
+      - "8081:8081"
+
+    # Volumes for generated audio + logs + GCP credentials
+    volumes:
+      # Generated TTS wav files (Flask app uses static/tts/)
+      - ./tts:/app/static/tts
+
+      # Optional: logs / sqlite / misc data if main.py writes any
+      - ./logs.txt:/app/logs.txt
+
+    environment:
+      # Point Google client at the mounted key
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-key.json
+
+      # Optional: if you want Flask to bind explicitly
+      # (only needed if main.py doesn't already do host="0.0.0.0")
+      # - FLASK_RUN_HOST=0.0.0.0
+      # - FLASK_RUN_PORT=8081
+
+    # If you ever want to override the default CMD:
+    # command: ["python", "main.py"]
