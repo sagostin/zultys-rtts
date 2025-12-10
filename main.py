@@ -10,13 +10,18 @@ app = Flask(__name__)
 
 app.config['UPLOAD_FOLDER'] = 'static/tts/'
 
-# Update logging configuration to include client IP
-logging.basicConfig(
-    level=logging.INFO,
-    filename='logs.txt',
-    filemode='a',
-    format='%(asctime)s - %(levelname)s - %(message)s - IP: %(clientip)s'
-)
+# Logging formatter that handles missing clientip
+class Formatter(logging.Formatter):
+    def format(self, record):
+        if 'clientip' not in record.__dict__:
+            record.__dict__['clientip'] = 'N/A'
+        return super().format(record)
+
+formatter = Formatter('%(asctime)s - %(levelname)s - %(message)s - IP: %(clientip)s')
+handler = logging.FileHandler('logs.txt')
+handler.setFormatter(formatter)
+
+logging.basicConfig(level=logging.INFO, handlers=[handler])
 
 def get_client_ip():
     if request.headers.get('X-Forwarded-For'):
